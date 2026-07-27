@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Biblioteca | Microservicios</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- =====================================================
+     Encabezado general de la aplicacion
+     ===================================================== -->
+<header class="topbar">
+    <div class="brand">
+        <span class="brand-mark">&#9776;</span>
+        <div>
+            <h1>Biblioteca<span>.</span></h1>
+            <p class="subtitle">Arquitectura de microservicios &mdash; Unidad 3</p>
+        </div>
+    </div>
+
+    <!-- Indicadores de estado de cada microservicio -->
+    <div class="service-status" id="serviceStatus">
+        <span class="status-pill" data-service="usuarios">Usuarios <i class="dot"></i></span>
+        <span class="status-pill" data-service="libros">Libros <i class="dot"></i></span>
+        <span class="status-pill" data-service="prestamos">Prestamos <i class="dot"></i></span>
+    </div>
+</header>
+
+<!-- =====================================================
+     Navegacion entre las 3 secciones
+     ===================================================== -->
+<nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="usuarios">01 &mdash; Usuarios</button>
+    <button class="tab" data-tab="libros">02 &mdash; Libros</button>
+    <button class="tab" data-tab="prestamos">03 &mdash; Prestamos</button>
+</nav>
+
+<main class="content">
+
+    <!-- ================= SECCION USUARIOS ================= -->
+    <section class="panel active" id="panel-usuarios">
+        <div class="grid">
+            <div class="card form-card">
+                <h2>Registrar usuario</h2>
+                <p class="hint">Microservicio: <code>usuarios-service</code> &middot; puerto 3001</p>
+                <form id="formUsuario">
+                    <label>Nombre completo
+                        <input type="text" id="usuarioNombre" required placeholder="Ej. Ana Torres">
+                    </label>
+                    <label>Email
+                        <input type="email" id="usuarioEmail" required placeholder="ana@correo.com">
+                    </label>
+                    <label>Telefono <span class="opt">(opcional)</span>
+                        <input type="text" id="usuarioTelefono" placeholder="0999999999">
+                    </label>
+                    <button type="submit" class="btn-primary">Registrar usuario</button>
+                    <p class="form-msg" id="usuarioMsg"></p>
+                </form>
+            </div>
+
+            <div class="card list-card">
+                <div class="list-header">
+                    <h2>Usuarios registrados</h2>
+                    <button class="btn-refresh" id="refreshUsuarios">Actualizar</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Telefono</th></tr>
+                        </thead>
+                        <tbody id="tablaUsuarios"><!-- filas generadas por JS --></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SECCION LIBROS ================= -->
+    <section class="panel" id="panel-libros">
+        <div class="grid">
+            <div class="card form-card">
+                <h2>Registrar libro</h2>
+                <p class="hint">Microservicio: <code>libros-service</code> &middot; puerto 3002</p>
+                <form id="formLibro">
+                    <label>Titulo
+                        <input type="text" id="libroTitulo" required placeholder="Ej. Rayuela">
+                    </label>
+                    <label>Autor
+                        <input type="text" id="libroAutor" required placeholder="Ej. Julio Cortazar">
+                    </label>
+                    <label>ISBN <span class="opt">(opcional)</span>
+                        <input type="text" id="libroIsbn" placeholder="978-...">
+                    </label>
+                    <label>Cantidad de copias
+                        <input type="number" id="libroCantidad" min="1" value="1" required>
+                    </label>
+                    <button type="submit" class="btn-primary">Registrar libro</button>
+                    <p class="form-msg" id="libroMsg"></p>
+                </form>
+            </div>
+
+            <div class="card list-card">
+                <div class="list-header">
+                    <h2>Catalogo de libros</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="soloDisponibles">
+                        Solo disponibles
+                    </label>
+                    <button class="btn-refresh" id="refreshLibros">Actualizar</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Titulo</th><th>Autor</th><th>Disponibles</th><th>Total</th></tr>
+                        </thead>
+                        <tbody id="tablaLibros"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SECCION PRESTAMOS ================= -->
+    <section class="panel" id="panel-prestamos">
+        <div class="grid">
+            <div class="card form-card">
+                <h2>Registrar prestamo</h2>
+                <p class="hint">Microservicio: <code>prestamos-service</code> &middot; puerto 3003</p>
+                <p class="hint">Valida contra <code>usuarios-service</code> y <code>libros-service</code> antes de guardar.</p>
+                <form id="formPrestamo">
+                    <label>Usuario
+                        <select id="prestamoUsuario" required>
+                            <option value="">Selecciona un usuario&hellip;</option>
+                        </select>
+                    </label>
+                    <label>Libro disponible
+                        <select id="prestamoLibro" required>
+                            <option value="">Selecciona un libro&hellip;</option>
+                        </select>
+                    </label>
+                    <button type="submit" class="btn-primary">Registrar prestamo</button>
+                    <p class="form-msg" id="prestamoMsg"></p>
+                </form>
+            </div>
+
+            <div class="card list-card">
+                <div class="list-header">
+                    <h2>Historial de prestamos</h2>
+                    <button class="btn-refresh" id="refreshPrestamos">Actualizar</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Usuario</th><th>Libro</th><th>Fecha</th><th>Estado</th><th></th></tr>
+                        </thead>
+                        <tbody id="tablaPrestamos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>Sistema de Biblioteca &mdash; Proyecto academico de Arquitectura de Microservicios</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
